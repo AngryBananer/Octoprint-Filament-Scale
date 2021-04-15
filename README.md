@@ -12,10 +12,9 @@ You will also need the bracket to connect the load cell to your printer: https:/
 
 ## Setup
 
-Install via the bundled [Plugin Manager](https://github.com/foosel/OctoPrint/wiki/Plugin:-Plugin-Manager)
-or manually using this URL:
+Install manually using this URL:
 
-    https://github.com/dieki-n/OctoPrint-Filament-scale/archive/master.zip
+    https://github.com/AngryBananer/OctoPrint-Filament-scale/archive/master.zip
 
 
 ## Configuration
