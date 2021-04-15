@@ -14,20 +14,20 @@ plugin_package = "octoprint_filament_scale"
 plugin_name = "Filament Scale"
 
 # The plugin's version. Can be overwritten within OctoPrint's internal data via __plugin_version__ in the plugin module
-plugin_version = "0.1.3.1"
+plugin_version = "0.1.4"
 
 # The plugin's description. Can be overwritten within OctoPrint's internal data via __plugin_description__ in the plugin
 # module
 plugin_description = "Plugin for integrating a load cell into a filament holder."
 
 # The plugin's author. Can be overwritten within OctoPrint's internal data via __plugin_author__ in the plugin module
-plugin_author = "Victor Noordhoek"
+plugin_author = "L. Kruse based on Victor Noordhoek's work"
 
 # The plugin's author's mail address.
-plugin_author_email = "you@example.com"
+plugin_author_email = ""
 
 # The plugin's homepage URL. Can be overwritten within OctoPrint's internal data via __plugin_url__ in the plugin module
-plugin_url = "https://github.com/dieki-n/OctoPrint-Filament-Scale"
+plugin_url = "https://github.com/AngryBananer/OctoPrint-Filament-Scale"
 
 # The plugin's license. Can be overwritten within OctoPrint's internal data via __plugin_license__ in the plugin module
 plugin_license = "AGPLv3"
