@@ -12,7 +12,8 @@ import RPi.GPIO as GPIO
 class Filament_scalePlugin(octoprint.plugin.SettingsPlugin,
 						   octoprint.plugin.AssetPlugin,
 						   octoprint.plugin.TemplatePlugin,
-						   octoprint.plugin.StartupPlugin):
+						   octoprint.plugin.StartupPlugin,
+						   octoprint.plugin.EventHandlerPlugin):
 
 
 	def get_template_configs(self):
@@ -27,7 +28,8 @@ class Filament_scalePlugin(octoprint.plugin.SettingsPlugin,
 			spool_weight=200,
 			clockpin=21,
 			datapin=20,
-			lastknownweight=0
+			lastknownweight=0,
+			getfromgcode=1
 			
 			# put your plugin's default settings here
 		)
@@ -78,6 +80,31 @@ class Filament_scalePlugin(octoprint.plugin.SettingsPlugin,
 			)
 		)
 
+
+    def on_event(self, event, payload):
+        if event == Events.FILE_SELECTED:
+            if self._settings.get_boolean(["getfromgcode"]):
+                fileLocation = payload.get("origin")
+                selectedFilename = payload.get("path")
+                if (fileLocation == octoprint.filemanager.FileDestinations.LOCAL):
+                    selectedFile = self._file_manager.path_on_disk(fileLocation, selectedFilename)
+                    try:
+                        import io
+                            with io.open(selectedFile, "r", encoding="ISO-8859-1") as f:
+                                for line in f:
+                                    if "filament_spool_weight = " in line:
+                                        spool_weight_str = ""
+                                    for i in line:
+                                        if i.isdigit() == True:
+                                            spool_weight_str = spool_weight_str + i
+                                    self._logger.info("Extracted spool weight: " + spool_weight_str + "g")
+                                    self._settings.set_int(["spool_weight"], spool_weight_str)
+                                    self._settings.save()
+                                    return
+                    except Exception as error:
+                        errorMessage = "ERROR! File: '" + selectedFile + " Error searching spool weight. Message: '" + str(error) + "'"
+                        self._logger.exception(errorMessage)
+                        self._eventLogging(errorMessage)
 
 # If you want your plugin to be registered within OctoPrint under a different name than what you defined in setup.py
 # ("OctoPrint-PluginSkeleton"), you may define that here. Same goes for the other metadata derived from setup.py that
