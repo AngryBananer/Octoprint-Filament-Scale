@@ -4,6 +4,7 @@ import sys
 
 
 import octoprint.plugin
+from octoprint.events import eventManager, Events
 import flask
 import threading
 from .hx711 import HX711
@@ -29,7 +30,7 @@ class Filament_scalePlugin(octoprint.plugin.SettingsPlugin,
             clockpin=21,
             datapin=20,
             lastknownweight=0,
-            getfromgcode=1
+            getfromgcode=0
             
             # put your plugin's default settings here
         )
@@ -94,17 +95,18 @@ class Filament_scalePlugin(octoprint.plugin.SettingsPlugin,
                             for line in f:
                                 if "filament_spool_weight = " in line:
                                     spool_weight_str = ""
-                                for i in line:
-                                    if i.isdigit() == True:
-                                        spool_weight_str = spool_weight_str + i
-                                self._logger.info("Extracted spool weight: " + spool_weight_str + "g")
-                                self._settings.set_int(["spool_weight"], spool_weight_str)
-                                self._settings.save()
-                                return
+                                    for i in line:
+                                        if i.isdigit() == True:
+                                            spool_weight_str = spool_weight_str + i
+                                    self._logger.info("Extracted spool weight: " + spool_weight_str + "g")
+                                    if 1 < int(spool_weight_str) < 1000:
+                                        self._settings.set_int(["spool_weight"], int(spool_weight_str))
+                                        self._settings.save()
+                                        eventManager().fire(Events.SETTINGS_UPDATED)
+                                    return
                     except Exception as error:
                         errorMessage = "ERROR! File: '" + selectedFile + " Error searching spool weight. Message: '" + str(error) + "'"
                         self._logger.exception(errorMessage)
-                        self._eventLogging(errorMessage)
 
 # If you want your plugin to be registered within OctoPrint under a different name than what you defined in setup.py
 # ("OctoPrint-PluginSkeleton"), you may define that here. Same goes for the other metadata derived from setup.py that
@@ -120,4 +122,3 @@ def __plugin_load__():
     __plugin_hooks__ = {
         "octoprint.plugin5.softwareupdate.check_config": __plugin_implementation__.get_update_information
     }
-
