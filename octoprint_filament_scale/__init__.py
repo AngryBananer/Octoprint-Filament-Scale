@@ -90,17 +90,17 @@ class Filament_scalePlugin(octoprint.plugin.SettingsPlugin,
                     selectedFile = self._file_manager.path_on_disk(fileLocation, selectedFilename)
                     try:
                         import io
-                            with io.open(selectedFile, "r", encoding="ISO-8859-1") as f:
-                                for line in f:
-                                    if "filament_spool_weight = " in line:
-                                        spool_weight_str = ""
-                                    for i in line:
-                                        if i.isdigit() == True:
-                                            spool_weight_str = spool_weight_str + i
-                                    self._logger.info("Extracted spool weight: " + spool_weight_str + "g")
-                                    self._settings.set_int(["spool_weight"], spool_weight_str)
-                                    self._settings.save()
-                                    return
+                        with io.open(selectedFile, "r", encoding="ISO-8859-1") as f:
+                            for line in f:
+                                if "filament_spool_weight = " in line:
+                                    spool_weight_str = ""
+                                for i in line:
+                                    if i.isdigit() == True:
+                                        spool_weight_str = spool_weight_str + i
+                                self._logger.info("Extracted spool weight: " + spool_weight_str + "g")
+                                self._settings.set_int(["spool_weight"], spool_weight_str)
+                                self._settings.save()
+                                return
                     except Exception as error:
                         errorMessage = "ERROR! File: '" + selectedFile + " Error searching spool weight. Message: '" + str(error) + "'"
                         self._logger.exception(errorMessage)
