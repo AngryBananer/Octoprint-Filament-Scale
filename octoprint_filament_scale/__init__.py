@@ -83,7 +83,7 @@ class Filament_scalePlugin(octoprint.plugin.SettingsPlugin,
 
 
     def on_event(self, event, payload):
-        if event == Events.FILE_SELECTED:
+        if event == Events.FILE_SELECTED or event == Events.PRINT_STARTED:
             if self._settings.get_boolean(["getfromgcode"]):
                 fileLocation = payload.get("origin")
                 selectedFilename = payload.get("path")
